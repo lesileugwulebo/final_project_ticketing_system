@@ -1,0 +1,65 @@
+version: '3.8'
+
+services:
+  # MySQL Database Container
+  db:
+    image: mysql:8.0
+    container_name: verdad_mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: verdad_tickets
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - ticketing_network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-ppassword"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # FastAPI Backend Container
+  backend:
+    build: ./backend
+    container_name: verdad_backend
+    restart: always
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    environment:
+      - DATABASE_URL=mysql+pymysql://root:password@db:3306/verdad_tickets
+      - SECRET_KEY=supersecretkeychangeinproduction1234567890!
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - ticketing_network
+
+  # React Frontend Container
+  frontend:
+    build: ./frontend
+    container_name: verdad_frontend
+    restart: always
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      - VITE_API_URL=http://localhost:8000/api/v1
+    depends_on:
+      - backend
+    networks:
+      - ticketing_network
+
+volumes:
+  db_data:
+
+networks:
+  ticketing_network:
+    driver: bridge
