@@ -1,13 +1,13 @@
 from datetime import datetime
 from typing import List, Optional
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, Field
 
 from app.models.models import UserRole, TicketStatus, TicketPriority, BackupStatus
 
 # --- Helper Base Config ---
 class BaseSchema(BaseModel):
     class Config:
-        from_attributes = True
+        orm_mode = True
 
 # --- Token Schemas ---
 class Token(BaseModel):
@@ -47,7 +47,7 @@ class Category(CategoryBase):
 
 # --- User Schemas ---
 class UserBase(BaseSchema):
-    email: EmailStr
+    email: str = Field(..., max_length=150)
     full_name: str = Field(..., max_length=100)
     role: UserRole
     department_id: Optional[int] = None
@@ -57,7 +57,7 @@ class UserCreate(UserBase):
     password: str = Field(..., min_length=8, max_length=64)
 
 class UserUpdate(BaseSchema):
-    email: Optional[EmailStr] = None
+    email: Optional[str] = None
     full_name: Optional[str] = Field(None, max_length=100)
     role: Optional[UserRole] = None
     department_id: Optional[int] = None

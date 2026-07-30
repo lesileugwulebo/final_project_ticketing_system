@@ -7,10 +7,7 @@ from app.core.config import settings
 
 # Passlib context utilizing Argon2ID
 pwd_context = CryptContext(
-    schemes=["argon2"],
-    argon2___memory_cost=65536,
-    argon2___time_cost=3,
-    argon2___parallelism=4,
+    schemes=["pbkdf2_sha256"],
     deprecated="auto"
 )
 
