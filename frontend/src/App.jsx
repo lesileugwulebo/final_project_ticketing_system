@@ -3,6 +3,7 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Tickets from './pages/Tickets';
+import KnowledgeBase from './pages/KnowledgeBase';
 
 const AppContent = () => {
   const { user, loading, logout } = useAuth();
@@ -67,6 +68,13 @@ const AppContent = () => {
           >
             🎫 Support Tickets
           </div>
+
+          <div 
+            className={`sidebar-item ${activeTab === 'kb' ? 'active' : ''}`}
+            onClick={() => setActiveTab('kb')}
+          >
+            📚 Knowledge Base
+          </div>
         </nav>
 
         <div className="sidebar-footer">
@@ -113,7 +121,7 @@ const AppContent = () => {
 
         {/* Content routing switcher */}
         <div style={{ flex: 1, overflow: 'hidden' }}>
-          {activeTab === 'dashboard' ? <Dashboard /> : <Tickets />}
+          {activeTab === 'dashboard' ? <Dashboard /> : activeTab === 'tickets' ? <Tickets /> : <KnowledgeBase />}
         </div>
       </main>
     </div>
