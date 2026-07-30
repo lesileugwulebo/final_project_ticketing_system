@@ -1,0 +1,23 @@
+# Python environment and compilation
+__pycache__/
+*.py[cod]
+*$py.class
+*.env
+.venv/
+env/
+venv/
+ENV/
+.pytest_cache/
+
+# Node environment and compilation
+node_modules/
+dist/
+.eslintcache
+*.log
+
+# System files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.local
